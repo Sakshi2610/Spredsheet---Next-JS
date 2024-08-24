@@ -22,17 +22,18 @@ const Grid = () => {
   const handleCellChange = (index, value) => updateCell(index, value);
   const handleCellClick = (index) => setSelectedCellIndex(index);
 
+  // Filter and paginate data
   const filteredData = data.filter((cell) => cell.value.includes(searchTerm));
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedData = filteredData.slice(0, startIndex + pageSize);
+  const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
 
   const totalColumns = 10; 
-  const rows = Math.ceil(paginatedData.length / totalColumns);
+  const totalRows = pageSize; // Use pageSize for the number of rows
 
   const handleScroll = () => {
     if (containerRef.current) {
       const { scrollTop, clientHeight, scrollHeight } = containerRef.current;
-      if (scrollHeight - scrollTop === clientHeight && hasMore) {
+      if (scrollHeight - scrollTop <= clientHeight && hasMore) {
         loadMoreData();
       }
     }
@@ -55,10 +56,10 @@ const Grid = () => {
           className="grid"
           style={{
             gridTemplateColumns: `50px repeat(${totalColumns}, 1fr)`,
-            width: "50%",
+            width: "100%", // Adjust width as needed
           }}
         >
-          {Array.from({ length: rows }, (_, rowIndex) => (
+          {Array.from({ length: totalRows }, (_, rowIndex) => (
             <React.Fragment key={rowIndex}>
               <div
                 className="bg-gray-200 flex items-center justify-center border-b border-gray-300"
@@ -88,7 +89,7 @@ const Grid = () => {
                         paginatedData[cellIndex]?.alignment || "left",
                       height: "40px",
                     }}
-                    className={`border border-gray-300 p-2 focus:outline-none focus:ring-2 focus-ring-blue-500 ${paginatedData[cellIndex]?.fontSize || "text-base"}`}
+                    className={`border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${paginatedData[cellIndex]?.fontSize || "text-base"}`}
                   />
                 );
               })}
