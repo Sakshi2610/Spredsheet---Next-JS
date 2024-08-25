@@ -19,12 +19,10 @@ const Grid = () => {
   const [selectedCellIndex, setSelectedCellIndex] = useState(null);
 
   const handleCellChange = (index, value) => {
-    console.log(`Updating cell at index: ${index} with value: ${value}`);
     updateCell(index, value);
   };
 
   const handleCellClick = (index) => {
-    console.log(`Cell clicked at index: ${index}`);
     setSelectedCellIndex(index);
   };
 
@@ -38,9 +36,7 @@ const Grid = () => {
   const startIndex = (currentPage - 1) * pageSize;
   const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
 
-  console.log("Filtered Data Length:", filteredData.length);
-  console.log("Paginated Data Length:", paginatedData.length);
-  console.log("Start Index:", startIndex);
+  
 
   const totalColumns = 10;
   const totalRows = pageSize;
@@ -48,9 +44,7 @@ const Grid = () => {
   const handleScroll = () => {
     if (containerRef.current) {
       const { scrollTop, clientHeight, scrollHeight } = containerRef.current;
-      console.log("Scroll event:", { scrollTop, clientHeight, scrollHeight });
       if (scrollHeight - scrollTop <= clientHeight && hasMore) {
-        console.log("Loading more data...");
         loadMoreData();
       }
     }
