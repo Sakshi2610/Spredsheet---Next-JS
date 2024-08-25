@@ -1,10 +1,12 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
-After Downloading the zip file.
-First Extract it all. 
-then run the command to install necessary dependencies and libraries 
-npm i 
+#After Downloading the zip file.
+1. First Extract it all
+2. Run the command to install the necessary dependencies and libraries 
+```bash
+npm i
+```
 
 then, run the development server:
 
