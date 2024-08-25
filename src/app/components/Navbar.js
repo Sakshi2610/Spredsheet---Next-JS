@@ -22,7 +22,7 @@ const Navbar = ({ selectedCellIndex }) => {
       updateCellFormat(selectedCellIndex, selectedAlignment, fontSize);
     }
   };
-console.log(selectedFontSize)
+// console.log(selectedFontSize)
   return (
     <div className="bg-gray-800 text-white p-4 flex items-center justify-between">
       <div className="flex space-x-20 ">

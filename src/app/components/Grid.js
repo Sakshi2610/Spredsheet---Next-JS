@@ -1,9 +1,8 @@
 "use client";
-
 import Navbar from "./Navbar";
 import useSpreadsheetStore from "../store/spreadsheetStore";
 import { useRef, useEffect, useState } from "react";
-import React from 'react';
+import React from "react";
 
 const Grid = () => {
   const {
@@ -19,21 +18,39 @@ const Grid = () => {
   const containerRef = useRef(null);
   const [selectedCellIndex, setSelectedCellIndex] = useState(null);
 
-  const handleCellChange = (index, value) => updateCell(index, value);
-  const handleCellClick = (index) => setSelectedCellIndex(index);
+  const handleCellChange = (index, value) => {
+    console.log(`Updating cell at index: ${index} with value: ${value}`);
+    updateCell(index, value);
+  };
 
-  // Filter and paginate data
-  const filteredData = data.filter((cell) => cell.value.includes(searchTerm));
+  const handleCellClick = (index) => {
+    console.log(`Cell clicked at index: ${index}`);
+    setSelectedCellIndex(index);
+  };
+
+  const filteredData = data.filter((cell, index) => {
+    if (searchTerm) {
+      return cell?.value?.includes(searchTerm);
+    }
+    return true;
+  });
+
   const startIndex = (currentPage - 1) * pageSize;
   const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
 
-  const totalColumns = 10; 
-  const totalRows = pageSize; // Use pageSize for the number of rows
+  console.log("Filtered Data Length:", filteredData.length);
+  console.log("Paginated Data Length:", paginatedData.length);
+  console.log("Start Index:", startIndex);
+
+  const totalColumns = 10;
+  const totalRows = pageSize;
 
   const handleScroll = () => {
     if (containerRef.current) {
       const { scrollTop, clientHeight, scrollHeight } = containerRef.current;
+      console.log("Scroll event:", { scrollTop, clientHeight, scrollHeight });
       if (scrollHeight - scrollTop <= clientHeight && hasMore) {
+        console.log("Loading more data...");
         loadMoreData();
       }
     }
@@ -56,7 +73,7 @@ const Grid = () => {
           className="grid"
           style={{
             gridTemplateColumns: `50px repeat(${totalColumns}, 1fr)`,
-            width: "100%", // Adjust width as needed
+            width: "100%",
           }}
         >
           {Array.from({ length: totalRows }, (_, rowIndex) => (
@@ -71,25 +88,32 @@ const Grid = () => {
                   zIndex: 10,
                 }}
               >
-                {rowIndex + 1}
+                {startIndex + rowIndex + 1}
               </div>
 
               {Array.from({ length: totalColumns }, (_, colIndex) => {
-                const cellIndex = rowIndex * totalColumns + colIndex;
+                const originalCellIndex =
+                  (startIndex + rowIndex) * totalColumns + colIndex;
+                const cellValue = data[originalCellIndex]?.value || "";
+                const isHighlighted =
+                  searchTerm && cellValue?.includes(searchTerm);
+
                 return (
                   <input
                     key={`${rowIndex}-${colIndex}`}
-                    value={paginatedData[cellIndex]?.value || ""}
-                    onClick={() => handleCellClick(cellIndex)}
+                    value={cellValue}
+                    onClick={() => handleCellClick(originalCellIndex)}
                     onChange={(e) =>
-                      handleCellChange(cellIndex, e.target.value)
+                      handleCellChange(originalCellIndex, e.target.value)
                     }
                     style={{
                       textAlign:
-                        paginatedData[cellIndex]?.alignment || "left",
+                        data[originalCellIndex]?.alignment || "left",
                       height: "40px",
                     }}
-                    className={`border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${paginatedData[cellIndex]?.fontSize || "text-base"}`}
+                    className={`border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      data[originalCellIndex]?.fontSize || "text-base"
+                    } ${isHighlighted ? "bg-yellow-300" : ""}`}
                   />
                 );
               })}

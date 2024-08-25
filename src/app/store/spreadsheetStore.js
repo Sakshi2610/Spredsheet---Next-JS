@@ -9,11 +9,12 @@ const useSpreadsheetStore = create((set) => ({
   searchTerm: '',
   pageSize: 1000,
   currentPage: 1,
-  hasMore: true, 
+  hasMore: true,
   history: [],
   redoStack: [],
 
   updateCell: (index, value) => set((state) => {
+    // console.log(`Updating cell in store at index: ${index}`);
     const newData = [...state.data];
     newData[index] = { ...newData[index], value };
     return {
@@ -32,13 +33,13 @@ const useSpreadsheetStore = create((set) => ({
   setSearchTerm: (term) => set({ searchTerm: term }),
 
   loadMoreData: () => set((state) => {
+    // console.log("Loading more data in store...");
     if (!state.hasMore) return {};
 
     const newPage = state.currentPage + 1;
-    const startIndex = newPage * state.pageSize;
-    const endIndex = startIndex + state.pageSize;
 
-    if (endIndex >= state.data.length) {
+    if (newPage * state.pageSize >= state.data.length) {
+      // console.log("No more data to load.");
       return { currentPage: newPage, hasMore: false };
     }
 
